@@ -82,26 +82,33 @@ Add the framework to a test target in your `Podfile`, making sure to include the
 ```ruby
 target 'MyAppTests' do
   use_frameworks!
-  pod 'MockingbirdFramework', '~> 0.17'
+  pod 'MockingbirdFramework', '~> 0.16'
 end
 ```
 
-In your project directory, initialize the pod and download the starter [supporting source files](https://github.com/birdrides/mockingbird/wiki/Supporting-Source-Files).
+Initialize the pod and install the CLI.
 
 ```console
 $ pod install
-$ Pods/MockingbirdFramework/mockingbird download starter-pack
+$ (cd Pods/MockingbirdFramework && make install-prebuilt)
+```
+
+Then download the starter [supporting source files](https://github.com/birdrides/mockingbird/wiki/Supporting-Source-Files).
+
+```console
+$ mockingbird download starter-pack
 ```
 
 Finally, configure a test target to generate mocks for each listed source module. For advanced usages, see the [available installer options](#install) and how to [set up targets manually](https://github.com/birdrides/mockingbird/wiki/Manual-Setup).
 
 ```console
-$ Pods/MockingbirdFramework/mockingbird install --target MyAppTests --sources MyApp MyLibrary1 MyLibrary2
+$ mockingbird install --target MyAppTests --sources MyApp MyLibrary1 MyLibrary2
 ```
 
 Optional but recommended:
 
 - [Exclude generated files from source control](https://github.com/birdrides/mockingbird/wiki/Integration-Tips#source-control-exclusion)
+- [Pin the binary for hermetic builds](https://github.com/birdrides/mockingbird/wiki/Integration-Tips#pin-the-binary)
 
 Have questions or issues?
 
@@ -116,14 +123,20 @@ Have questions or issues?
 Add the framework to your `Cartfile`.
 
 ```
-github "birdrides/mockingbird" ~> 0.17
+github "birdrides/mockingbird" ~> 0.16
 ```
 
-In your project directory, build the framework, [link it to your test target](https://github.com/birdrides/mockingbird/wiki/Linking-Test-Targets), and download the starter [supporting source files](https://github.com/birdrides/mockingbird/wiki/Supporting-Source-Files).
+Build the framework with Carthage, [link it to your test target](https://github.com/birdrides/mockingbird/wiki/Linking-Test-Targets), and install the CLI.
 
 ```console
 $ carthage update
-$ Carthage/Checkouts/mockingbird download starter-pack
+$ (cd Carthage/Checkouts/mockingbird && make install-prebuilt)
+```
+
+Then download the starter [supporting source files](https://github.com/birdrides/mockingbird/wiki/Supporting-Source-Files).
+
+```console
+$ mockingbird download starter-pack
 ```
 
 Finally, configure a test target to generate mocks for each listed source module. For advanced usages, see the [available installer options](#install) and how to [set up targets manually](https://github.com/birdrides/mockingbird/wiki/Manual-Setup).
@@ -135,6 +148,7 @@ $ mockingbird install --target MyAppTests --sources MyApp MyLibrary1 MyLibrary2
 Optional but recommended:
 
 - [Exclude generated files from source control](https://github.com/birdrides/mockingbird/wiki/Integration-Tips#source-control-exclusion)
+- [Pin the binary for hermetic builds](https://github.com/birdrides/mockingbird/wiki/Integration-Tips#pin-the-binary)
 
 Have questions or issues?
 
@@ -162,7 +176,7 @@ let package = Package(
   name: "MyPackage",
   dependencies: [
     // Add the line below
-    .package(name: "Mockingbird", url: "https://github.com/birdrides/mockingbird.git", .upToNextMinor(from: "0.17.0")),
+    .package(name: "Mockingbird", url: "https://github.com/birdrides/mockingbird.git", .upToNextMinor(from: "0.16.0")),
   ],
   targets: [
     .testTarget(
@@ -177,24 +191,30 @@ let package = Package(
 
 </details>
 
-In your project directory, initialize the package dependency and download the starter [supporting source files](https://github.com/birdrides/mockingbird/wiki/Supporting-Source-Files).
+In your project directory, initialize the package dependency and install the CLI.
 
 ```console
 $ xcodebuild -resolvePackageDependencies
 $ DERIVED_DATA=$(xcodebuild -showBuildSettings | pcregrep -o1 'OBJROOT = (/.*)/Build')
-$ REPO_PATH="${DERIVED_DATA}/SourcePackages/checkouts/mockingbird"
-$ REPO_PATH/mockingbird download starter-pack
+$ (cd "${DERIVED_DATA}/SourcePackages/checkouts/mockingbird" && make install-prebuilt)
+```
+
+Then download the starter [supporting source files](https://github.com/birdrides/mockingbird/wiki/Supporting-Source-Files).
+
+```console
+$ mockingbird download starter-pack
 ```
 
 Finally, configure a test target to generate mocks for each listed source module. For advanced usages, see the [available installer options](#install) and how to [set up targets manually](https://github.com/birdrides/mockingbird/wiki/Manual-Setup).
 
 ```console
-$ REPO_PATH/mockingbird install --target MyPackageTests --sources MyPackage MyLibrary1 MyLibrary2
+$ mockingbird install --target MyPackageTests --sources MyPackage MyLibrary1 MyLibrary2
 ```
 
 Optional but recommended:
 
 - [Exclude generated files from source control](https://github.com/birdrides/mockingbird/wiki/Integration-Tips#source-control-exclusion)
+- [Pin the binary for hermetic builds](https://github.com/birdrides/mockingbird/wiki/Integration-Tips#pin-the-binary)
 
 Have questions or issues?
 
@@ -628,7 +648,7 @@ Configure a test target to use mocks.
 | `--condition` | `(none)` | [Compilation condition](https://docs.swift.org/swift-book/ReferenceManual/Statements.html#ID538) to wrap all generated mocks in, e.g. `DEBUG`. |
 | `--diagnostics` | `(none)` | List of [diagnostic generator warnings](https://github.com/birdrides/mockingbird/wiki/Diagnostic-Warnings-and-Errors) to enable. |
 | `--loglevel` |  `(none)` | The log level to use when generating mocks, `quiet` or `verbose`. |
-| `--prune` | `omit` | The [pruning method](#thunk-pruning) to use on unreferenced types. |
+| `--prune` | `stub` | The [pruning method](#thunk-pruning) to use on unreferenced types. |
 
 | Flag | Description |
 | --- | --- |
@@ -660,10 +680,6 @@ Download and unpack a compatible asset bundle. Bundles will never overwrite exis
 | Asset | Description |
 | --- | --- |
 | `starter-pack` | Starter [supporting source files](https://github.com/birdrides/mockingbird/wiki/Supporting-Source-Files). |
-
-| Option | Default Value | Description |
-| --- | --- | --- |
-| `--url` | `https://github.com/birdrides/mockingbird/releases/download` | The base URL containing downloadable asset bundles. |
 
 ### Global Options
 

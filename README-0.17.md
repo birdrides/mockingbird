@@ -82,7 +82,7 @@ Add the framework to a test target in your `Podfile`, making sure to include the
 ```ruby
 target 'MyAppTests' do
   use_frameworks!
-  pod 'MockingbirdFramework', '~> 0.18'
+  pod 'MockingbirdFramework', '~> 0.17'
 end
 ```
 
@@ -116,7 +116,7 @@ Have questions or issues?
 Add the framework to your `Cartfile`.
 
 ```
-github "birdrides/mockingbird" ~> 0.18
+github "birdrides/mockingbird" ~> 0.17
 ```
 
 In your project directory, build the framework, [link it to your test target](https://github.com/birdrides/mockingbird/wiki/Linking-Test-Targets), and download the starter [supporting source files](https://github.com/birdrides/mockingbird/wiki/Supporting-Source-Files).
@@ -162,7 +162,7 @@ let package = Package(
   name: "MyPackage",
   dependencies: [
     // Add the line below
-    .package(name: "Mockingbird", url: "https://github.com/birdrides/mockingbird.git", .upToNextMinor(from: "0.18.0")),
+    .package(name: "Mockingbird", url: "https://github.com/birdrides/mockingbird.git", .upToNextMinor(from: "0.17.0")),
   ],
   targets: [
     .testTarget(
